@@ -35,7 +35,22 @@ function movePlayer({ playerId, move }) {
     if(!moveFunction) return;
 
     moveFunction();
+    checkPlayerCollision({ playerId })
     renderScreen();
+}
+
+
+function checkPlayerCollision({ playerId }) {
+    const player = gameState.players[playerId];
+
+    for(const fruitId in gameState.fruits){
+        const fruit = gameState.fruits[fruitId];
+        if(player.positionX !== fruit.positionX || player.positionY !== fruit.positionY) continue
+
+        removeFruit({
+            fruitId
+        })
+    }
 }
 
 
@@ -122,3 +137,7 @@ process.stdin.on('keypress', (str, key) => {
 
 addPlayer({ playerId: 'id1', positionX: 2, positionY: 6 });
 addFruit({ fruitId: 'id3', positionX: 6, positionY: 1 });
+addFruit({ fruitId: 'id4', positionX: 8, positionY: 8 });
+addFruit({ fruitId: 'id5', positionX: 1, positionY: 12 });
+addFruit({ fruitId: 'id6', positionX: 4, positionY: 4 });
+addFruit({ fruitId: 'id7', positionX: 4, positionY: 8 });
