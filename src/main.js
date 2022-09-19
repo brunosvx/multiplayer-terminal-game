@@ -1,20 +1,51 @@
+import readline from 'readline';
+
 import { config } from "./config.js";
 
 const gameState = {
-    players:[
-        {
-            playerId: 'id1',
-            positionX: 1,
-            positionY: 3
-        }
-    ],
-    fruits: [
-        {
-            fruitId: 'id3',
+    players:{
+        'id1':{
+                positionX: 1,
+                positionY: 3
+            }
+        },
+    fruits: {
+        'id3':{
             positionX: 4,
             positionY: 8
+            }
         }
-    ]
+}
+
+
+
+
+function movePlayer({ playerId, move }) {
+    const acceptedMoves = {
+        down() {
+            if(gameState.players[playerId].positionY + 1 === config.screenHeight) return
+            gameState.players[playerId].positionY++
+        },
+        up() {
+            if(gameState.players[playerId].positionY === 0) return
+            gameState.players[playerId].positionY--
+        },
+        left() {
+            if(gameState.players[playerId].positionX === 0) return
+            gameState.players[playerId].positionX--
+        },
+        right() {
+            if(gameState.players[playerId].positionX + 1 === config.screenWidth) return
+            gameState.players[playerId].positionX++
+        },
+    }
+
+    const moveFunction = acceptedMoves[move];
+
+    if(!moveFunction) return;
+
+    moveFunction();
+    renderScreen();
 }
 
 function renderScreen() {
@@ -23,14 +54,17 @@ function renderScreen() {
       }, () => Array(config.screenWidth).fill('\x1b[47m  \x1b[0m'));
 
 
-    gameState.players.map(player => {
-        canvas[player.positionY][player.positionX] = '\x1b[41m  \x1b[0m'
-    })
-    gameState.fruits.map(fruit => {
-        canvas[fruit.positionY][fruit.positionX] = '\x1b[42m  \x1b[0m'
-    })
+    const players = gameState.players;
+    const fruits = gameState.fruits;
 
-    let output = '';
+    for(const prop in players){
+        canvas[players[prop].positionY][players[prop].positionX] = '\x1b[41m  \x1b[0m'
+    }
+    for(const prop in fruits){
+        canvas[fruits[prop].positionY][fruits[prop].positionX] = '\x1b[41m  \x1b[0m'
+    }
+
+    let output = '\n\n';
 
     canvas.map(line => {
         line.map(field => {
@@ -38,7 +72,7 @@ function renderScreen() {
         })
         output += '\n'
     })
-
+    
     console.clear();
     console.log(output);
 
@@ -46,3 +80,16 @@ function renderScreen() {
 }
 
 renderScreen();
+
+
+readline.emitKeypressEvents(process.stdin);
+process.stdin.setRawMode(true);
+
+process.stdin.on('keypress', (str, key) => {
+  if (key.name === 'escape') process.exit();
+
+    movePlayer({
+        playerId: 'id1',
+        move: key.name
+    })
+});
