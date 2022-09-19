@@ -3,18 +3,8 @@ import readline from 'readline';
 import { config } from "./config.js";
 
 const gameState = {
-    players:{
-        'id1':{
-                positionX: 1,
-                positionY: 3
-            }
-        },
-    fruits: {
-        'id3':{
-            positionX: 4,
-            positionY: 8
-            }
-        }
+    players:{},
+    fruits: {}
 }
 
 
@@ -48,6 +38,26 @@ function movePlayer({ playerId, move }) {
     renderScreen();
 }
 
+
+function addPlayer({ playerId, positionX, positionY }) {
+    gameState.players[playerId] = {
+        positionX,
+        positionY
+    }
+    
+    renderScreen();
+}
+
+function addFruit({ fruitId, positionX, positionY }) {
+    gameState.fruits[fruitId] = {
+        positionX,
+        positionY
+    }
+
+    renderScreen();
+}
+
+
 function renderScreen() {
     const canvas = Array.from({
         length: config.screenHeight 
@@ -63,16 +73,16 @@ function renderScreen() {
         canvas[players[prop].positionY][players[prop].positionX] = '\x1b[41m  \x1b[0m'
     }
     for(const prop in fruits){
-        canvas[fruits[prop].positionY][fruits[prop].positionX] = '\x1b[41m  \x1b[0m'
+        canvas[fruits[prop].positionY][fruits[prop].positionX] = '\x1b[42m  \x1b[0m'
     }
 
-    let output = '\n\n';
+    let output = '\n\n\x1b[0m  ';
 
     canvas.map(line => {
         line.map(field => {
             output += field
         })
-        output += '\n'
+        output += '\n\x1b[0m  '
     })
     
     console.clear();
@@ -95,3 +105,7 @@ process.stdin.on('keypress', (str, key) => {
         move: key.name
     })
 });
+
+
+addPlayer({ playerId: 'id1', positionX: 2, positionY: 6 });
+addFruit({ fruitId: 'id3', positionX: 6, positionY: 1 });
