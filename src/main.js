@@ -58,6 +58,19 @@ function addFruit({ fruitId, positionX, positionY }) {
 }
 
 
+function removePlayer({ playerId }) {
+    delete gameState.players[playerId];
+    
+    renderScreen();
+}
+
+function removeFruit({ fruitId }) {
+    delete gameState.fruits[fruitId];
+
+    renderScreen();
+}
+
+
 function renderScreen() {
     const canvas = Array.from({
         length: config.screenHeight 
