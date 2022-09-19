@@ -51,7 +51,9 @@ function movePlayer({ playerId, move }) {
 function renderScreen() {
     const canvas = Array.from({
         length: config.screenHeight 
-      }, () => Array(config.screenWidth).fill('\x1b[47m  \x1b[0m'));
+    }, () => Array(config.screenWidth).fill('\x1b[47m  '));
+
+    canvas[config.screenHeight-1][config.screenWidth-1] = '\x1b[47m  \x1b[0m'
 
 
     const players = gameState.players;
