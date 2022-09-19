@@ -1,4 +1,4 @@
 export const config = {
-    screenHeight: 100,
-    screenWidth: 100
+    screenHeight: 20,
+    screenWidth: 50
 }
