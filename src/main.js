@@ -1,4 +1,5 @@
 import readline from 'readline';
+import { io } from 'socket.io-client';
 
 import { config } from "./config.js";
 
@@ -6,7 +7,6 @@ const gameState = {
     players:{},
     fruits: {}
 }
-
 
 
 
