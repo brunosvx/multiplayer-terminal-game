@@ -4,11 +4,26 @@ import { io } from 'socket.io-client';
 import { config } from "./config.js";
 
 const gameState = {
+    myId: null,
     players:{},
     fruits: {}
 }
 
 
+const socket = io('ws://localhost:3333');
+
+socket.on('connect', () => {
+    console.log('connected', socket.id);
+    gameState.myId = socket.id;
+})
+
+socket.on('initialPositions', positions => {
+    addPlayer({ playerId: gameState.myId, positionX: positions.positionX, positionY: positions.positionY })
+}) 
+
+socket.on('newPlayer', player => {
+    addPlayer({ playerId: player.playerId, positionX: player.positionX, positionY: player.positionY });
+}) 
 
 function movePlayer({ playerId, move }) {
     const acceptedMoves = {
@@ -128,16 +143,11 @@ process.stdin.setRawMode(true);
 process.stdin.on('keypress', (str, key) => {
   if (key.name === 'escape') process.exit();
 
+  if(!gameState.myId) return
+
     movePlayer({
-        playerId: 'id1',
+        playerId: gameState.myId,
         move: key.name
     })
 });
 
-
-addPlayer({ playerId: 'id1', positionX: 2, positionY: 6 });
-addFruit({ fruitId: 'id3', positionX: 6, positionY: 1 });
-addFruit({ fruitId: 'id4', positionX: 8, positionY: 8 });
-addFruit({ fruitId: 'id5', positionX: 1, positionY: 12 });
-addFruit({ fruitId: 'id6', positionX: 4, positionY: 4 });
-addFruit({ fruitId: 'id7', positionX: 4, positionY: 8 });
