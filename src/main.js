@@ -1,7 +1,7 @@
 import readline from 'readline';
 import { io } from 'socket.io-client';
 
-import { addPlayer, gameState, movePlayer } from './game.js';
+import { addPlayer, gameState, movePlayer, setGameState } from './game.js';
 
 const socket = io('ws://localhost:3333');
 
@@ -10,12 +10,16 @@ socket.on('connect', () => {
     gameState.myId = socket.id;
 })
 
-socket.on('initialPositions', positions => {
-    addPlayer({ playerId: gameState.myId, positionX: positions.positionX, positionY: positions.positionY })
+socket.on('setup', data => {
+    setGameState(data);
 }) 
 
 socket.on('newPlayer', player => {
     addPlayer({ playerId: player.playerId, positionX: player.positionX, positionY: player.positionY });
+}) 
+
+socket.on('playerMove', data => {
+    movePlayer({ playerId: data.playerId, move: data.move });
 }) 
 
 readline.emitKeypressEvents(process.stdin);
@@ -24,11 +28,20 @@ process.stdin.setRawMode(true);
 process.stdin.on('keypress', (str, key) => {
   if (key.name === 'escape') process.exit();
 
-  if(!gameState.myId) return
+  const playerId = gameState.myId;
 
-    movePlayer({
-        playerId: gameState.myId,
-        move: key.name
+  if(!playerId) return
+
+  
+  const hasMoved = movePlayer({
+      playerId,
+      move: key.name
+    })
+
+    if(!hasMoved) return
+
+    socket.emit('move', {
+      move: key.name
     })
 });
 
