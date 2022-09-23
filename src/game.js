@@ -63,7 +63,8 @@ function checkPlayerCollision({ playerId }) {
 export function addPlayer({ playerId, positionX, positionY }) {
     gameState.players[playerId] = {
         positionX,
-        positionY
+        positionY,
+        points: 0
     }
     
     renderScreen();
@@ -126,3 +127,8 @@ function renderScreen() {
 }
 
 renderScreen();
+
+
+export function setPlayerPoints({ playerId, points }) {
+    gameState.players[playerId].points = points;
+}

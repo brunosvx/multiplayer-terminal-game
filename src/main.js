@@ -1,7 +1,7 @@
 import readline from 'readline';
 import { io } from 'socket.io-client';
 
-import { addPlayer, gameState, movePlayer, setGameState, addFruit, removePlayer } from './game.js';
+import { addPlayer, gameState, movePlayer, setGameState, addFruit, removePlayer, setPlayerPoints } from './game.js';
 
 const socket = io('ws://localhost:3333');
 
@@ -28,6 +28,10 @@ socket.on('newFruit', data => {
 
 socket.on('playerDisconnected', data => {
     removePlayer(data);
+}) 
+
+socket.on('playerPoints', data => {
+    setPlayerPoints(data)
 }) 
 
 readline.emitKeypressEvents(process.stdin);
