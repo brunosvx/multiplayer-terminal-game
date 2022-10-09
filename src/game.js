@@ -111,7 +111,21 @@ function renderScreen() {
         canvas[fruits[prop].positionY][fruits[prop].positionX] = '\x1b[42m  \x1b[0m'
     }
 
-    let output = '\n\n\x1b[0m  ';
+    let output = '\n\x1b[0m  ';
+
+    const orderedPlayers = [];
+    
+    for(const player in players) {
+        orderedPlayers.push({ playerId: player, points: players[player].points });
+    }
+
+    orderedPlayers.sort((a, b) => b.points - a.points);
+
+    orderedPlayers.map(player => {
+        output += `${player.playerId === gameState.myId ? `\x1b[33m${player.playerId}\x1b[0m` : player.playerId} - ${player.points} \n  `;
+    })
+
+    output += '\n  '
 
     canvas.map(line => {
         line.map(field => {
@@ -131,4 +145,5 @@ renderScreen();
 
 export function setPlayerPoints({ playerId, points }) {
     gameState.players[playerId].points = points;
+    renderScreen();
 }
