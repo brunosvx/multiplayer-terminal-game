@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 
 import { addPlayer, gameState, movePlayer, setGameState, addFruit, removePlayer, setPlayerPoints } from './game.js';
 
-const socket = io('ws://localhost:3333');
+const socket = io('wss://multiplayer-game-brunosvx.herokuapp.com/');
 
 socket.on('connect', () => {
     console.log('connected', socket.id);
