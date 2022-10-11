@@ -3,3 +3,10 @@
 <br>
 
 <img src="preview.gif" />
+
+<br>
+
+### To start, run:
+```
+npm start
+```
